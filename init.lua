@@ -29,6 +29,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 -- Plugin setup
+
+-- Plugin setup
 require("lazy").setup({
 
   -- File explorer
@@ -37,7 +39,6 @@ require("lazy").setup({
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("nvim-web-devicons").setup()
-
       require("nvim-tree").setup({
         renderer = {
           icons = {
@@ -50,13 +51,11 @@ require("lazy").setup({
           },
         },
       })
-
       vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
     end,
   },
 
-
-  -- Tree-sitter for better syntax highlighting
+  -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
@@ -66,24 +65,25 @@ require("lazy").setup({
           "lua", "python", "bash", "json", "yaml", "html", "css", "javascript"
         },
         highlight = { enable = true },
-        indent = { enable = true }, -- optional: better indentation
+        indent = { enable = true },
       })
     end,
   },
 
-      -- Treesitter context (sticky header)
+  -- Treesitter context
   {
     "nvim-treesitter/nvim-treesitter-context",
     config = function()
       require("treesitter-context").setup({
-        enable = true,            -- Enable this plugin (can be toggled via :TSContextToggle)
-        max_lines = 3,            -- How many lines of context to show
-        trim_scope = "outer",     -- Remove outer context if it exceeds max_lines
-        mode = "cursor",          -- Use cursor position (not top line) to determine context
+        enable = true,
+        max_lines = 3,
+        trim_scope = "outer",
+        mode = "cursor",
       })
     end,
   },
 
+  -- Telescope
   {
     "nvim-telescope/telescope.nvim",
     tag = "0.1.5",
@@ -96,7 +96,7 @@ require("lazy").setup({
     end,
   },
 
-
+  -- Which-key
   {
     "folke/which-key.nvim",
     config = function()
@@ -104,7 +104,7 @@ require("lazy").setup({
     end,
   },
 
-
+  -- Git signs
   {
     "lewis6991/gitsigns.nvim",
     config = function()
@@ -112,15 +112,38 @@ require("lazy").setup({
     end,
   },
 
+  -- Mason for managing LSP servers
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require("mason").setup()
+    end,
+  },
+
+  {
+    "williamboman/mason-lspconfig.nvim",
+    dependencies = {
+      "williamboman/mason.nvim",
+      "neovim/nvim-lspconfig",
+    },
+    config = function()
+      require("mason-lspconfig").setup({
+        ensure_installed = { "pyright", "lua_ls" },
+        automatic_installation = true,
+      })
+    end,
+  },
+
+  -- LSP config
   {
     "neovim/nvim-lspconfig",
     config = function()
       local lspconfig = require("lspconfig")
 
-      -- Example: Python with pyright
+      -- Python LSP
       lspconfig.pyright.setup({})
 
-      -- Example: Lua (with nvim lua development hints)
+      -- Lua LSP
       lspconfig.lua_ls.setup({
         settings = {
           Lua = {
@@ -132,10 +155,6 @@ require("lazy").setup({
       })
     end,
   }
-
-
-
-
 
 
 })
