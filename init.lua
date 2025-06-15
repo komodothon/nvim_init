@@ -112,4 +112,30 @@ require("lazy").setup({
     end,
   },
 
+  {
+    "neovim/nvim-lspconfig",
+    config = function()
+      local lspconfig = require("lspconfig")
+
+      -- Example: Python with pyright
+      lspconfig.pyright.setup({})
+
+      -- Example: Lua (with nvim lua development hints)
+      lspconfig.lua_ls.setup({
+        settings = {
+          Lua = {
+            diagnostics = {
+              globals = { "vim" },
+            },
+          },
+        },
+      })
+    end,
+  }
+
+
+
+
+
+
 })
