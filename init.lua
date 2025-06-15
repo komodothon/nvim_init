@@ -22,83 +22,79 @@ local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
     "git", "clone", "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git", lazypath,
+    "https://github.com/folke/lazy.nvim.git",
+    lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
 -- Plugin setup
 require("lazy").setup({
+
   -- File explorer
   {
     "nvim-tree/nvim-tree.lua",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("nvim-tree").setup({})
-      vim.cmd([[autocmd VimEnter * silent! NvimTreeToggle]])
+      require("nvim-web-devicons").setup()
+
+      require("nvim-tree").setup({
+        renderer = {
+          icons = {
+            show = {
+              file = true,
+              folder = true,
+              folder_arrow = true,
+              git = true,
+            },
+          },
+        },
+      })
+
+      vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
     end,
   },
 
-  -- Treesitter for better syntax highlighting
+
+  -- Tree-sitter for better syntax highlighting
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = { "lua", "python", "bash", "json", "yaml" },
-        highlight = { enable = true },
-      })
-    end,
-  },
-  -- Mason for managing LSP servers
-  {
-    "williamboman/mason.nvim",
-    build = ":MasonUpdate",
-    config = function()
-      require("mason").setup()
-    end,
-  },
-
-  -- Bridge Mason and LSPConfig
-  {
-    "williamboman/mason-lspconfig.nvim",
-    dependencies = { "williamboman/mason.nvim" },
-    config = function()
-      require("mason-lspconfig").setup({
-        ensure_installed = { "lua_ls", "pyright", "bashls" }, -- Add more as needed
-        automatic_installation = true,
-      })
-    end,
-  },
-
-
-  -- LSP configuration
-  {
-    "neovim/nvim-lspconfig",
-    config = function()
-      local lspconfig = require("lspconfig")
-
-      -- Lua LSP example
-      lspconfig.lua_ls.setup({
-        settings = {
-          Lua = {
-            diagnostics = { globals = { "vim" } },
-          },
+        ensure_installed = {
+          "lua", "python", "bash", "json", "yaml", "html", "css", "javascript"
         },
+        highlight = { enable = true },
+        indent = { enable = true }, -- optional: better indentation
       })
-
-      -- Python LSP
-      lspconfig.pyright.setup({})
-
-      -- Bash
-      lspconfig.bashls.setup({})
     end,
   },
 
+      -- Treesitter context (sticky header)
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    config = function()
+      require("treesitter-context").setup({
+        enable = true,            -- Enable this plugin (can be toggled via :TSContextToggle)
+        max_lines = 3,            -- How many lines of context to show
+        trim_scope = "outer",     -- Remove outer context if it exceeds max_lines
+        mode = "cursor",          -- Use cursor position (not top line) to determine context
+      })
+    end,
+  },
+
+  {
+    "nvim-telescope/telescope.nvim",
+    tag = "0.1.5",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("telescope").setup()
+      vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<CR>", { desc = "Find files" })
+      vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<CR>", { desc = "Grep text" })
+      vim.keymap.set("n", "<leader>fb", "<cmd>Telescope buffers<CR>", { desc = "List buffers" })
+    end,
+  },
 
 
 })
-
--- Keymap to toggle nvim-tree
-vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<CR>", { desc = "Toggle file explorer" })
-
