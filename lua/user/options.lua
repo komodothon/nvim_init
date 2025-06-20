@@ -1,5 +1,8 @@
 --options.lua
 
+-- Set transparency before colorscheme loads
+vim.g.base16_transparent_background = true
+
 -- Editor settings
 vim.opt.number = true
 vim.opt.relativenumber = true
