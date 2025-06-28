@@ -25,6 +25,10 @@ return {
       map("n", "]d", vim.diagnostic.goto_next, opts)
       map("n", "<leader>dd", vim.diagnostic.open_float, opts)
 
+      vim.fn.sign_define("DiagnosticSignError",   {text = "", texthl = "DiagnosticSignError"})
+      vim.fn.sign_define("DiagnosticSignWarn",    {text = "", texthl = "DiagnosticSignWarn"})
+      vim.fn.sign_define("DiagnosticSignInfo",    {text = "", texthl = "DiagnosticSignInfo"})
+      vim.fn.sign_define("DiagnosticSignHint",    {text = "", texthl = "DiagnosticSignHint"})
       -- Highlight current symbol
       if client.server_capabilities.documentHighlightProvider then
         local group = vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true })
