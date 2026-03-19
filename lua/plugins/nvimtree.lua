@@ -5,6 +5,10 @@ return {
     config = function()
       require("nvim-web-devicons").setup()
       require("nvim-tree").setup({
+        view = {
+          side = "right",
+          width = 35,
+        },
         renderer = {
           icons = {
             show = {
